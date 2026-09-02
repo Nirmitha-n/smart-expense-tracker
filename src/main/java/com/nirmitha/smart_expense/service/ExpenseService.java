@@ -1,49 +1,43 @@
 package com.nirmitha.smart_expense.service;
+import com.nirmitha.smart_expense.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 import com.nirmitha.smart_expense.model.Expense;
 import java.util.List;
-import java.util.ArrayList;
 
 @Service
 public class ExpenseService{
-    public ExpenseService(){
-        this.addExpense("Salary", 80000.00, "Income");
-        this.addExpense("Shopping", 7990, "Expense");
+    private final ExpenseRepository expenseRepo;
+    public ExpenseService(ExpenseRepository expenseRepo){
+        this.expenseRepo = expenseRepo;
     }
 
-    private final List<Expense> expenses = new ArrayList<>();
-
     public List<Expense> getAllExpenses(){
-        return expenses;
+        return expenseRepo.findAll();
     }
 
     public Expense getExpenseById(Long id){
-        for(int i = 0; i < expenses.size(); i++){
-            if(expenses.get(i).getId().equals(id)){
-               return expenses.get(i);
-            }
-        }
-        return null;
+        return expenseRepo.findById(id).orElse(null);
     }
 
     public void addExpense(String title, double amount, String category){
-        long id = expenses.size() + 1;
-        Expense expense = new Expense(id, title, amount, category);
-        expenses.add(expense);
+        Expense expense = new Expense(title, amount, category);
+        expenseRepo.save(expense);
 
     }
 
     public boolean deleteExpense(Long id){
-        return expenses.removeIf(expense -> expense.getId().equals(id));
+         if(expenseRepo.existsById(id)){
+             expenseRepo.deleteById(id);
+             return true;
+         }
+         return false;
     }
 
     public boolean updateExpense(Long id, String title, double amount, String category){
-        for(int i = 0; i < expenses.size(); i++) {
-            if (expenses.get(i).getId().equals(id)) {
-                Expense newExpense = new Expense(id, title, amount, category);
-                expenses.set(i, newExpense);
-                return true;
-            }
+        Expense newExpense = new Expense(id, title, amount, category);
+        if(expenseRepo.existsById(id)) {
+            expenseRepo.save(newExpense);
+            return true;
         }
         return false;
     }

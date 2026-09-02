@@ -18,7 +18,7 @@ public class ExpenseController{
      }
 
      @GetMapping("/expenses")
-    public List<Expense> getExpenses(){
+     public List<Expense> getExpenses(){
          return expenseService.getAllExpenses();
      }
 
@@ -52,7 +52,7 @@ public class ExpenseController{
      }
 
      @PutMapping("/expenses/{id}")
-    public ResponseEntity<Void> updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request){
+     public ResponseEntity<Void> updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request){
          String title = request.getTitle();
          double amount = request.getAmount();
          String category = request.getCategory();
